@@ -1,0 +1,12 @@
+{
+  "rules": {
+    "typescript/no-explicit-any": "warn",
+    "typescript/no-unused-vars": "warn",
+    "unicorn/filename-case": "off"
+  },
+  "env": {
+    "node": true,
+    "browser": true,
+    "es2022": true
+  }
+}
