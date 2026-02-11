@@ -12,7 +12,8 @@ A modern, type-safe testing runtime for web components with Playwright. Test you
 - **Automatic visual regression testing** - Capture screenshots after every assertion with `autoVrt` mode for zero-config and zero-code visual testing
 - **Mocking and component testing utilities** - Set properties/functions, emit events, spy on handlers
 - **Support for JSX and Lit HTML components** - Write tests in your preferred format
-- **Hot reload and Tooling** - Watch mode for rapid test iteration and Playwright Plugin VSCode and IntelliJ Test Integration support
+- **VSCode Test Explorer integration** - Run and debug tests directly in VSCode with the Playwright extension (zero configuration) and using the  official `ms-playwright.playwright` extension
+- **Hot reload and Tooling** - Watch mode for rapid test iteration
 - **Automatic component type detection** - JSX and Lit HTML detected automatically
 - **Works with any web component library** - Stencil, Lit, vanilla Custom Elements, etc.
 - **Example projects for Lit and Stencil** - Get started quickly with working examples
@@ -33,6 +34,8 @@ A modern, type-safe testing runtime for web components with Playwright. Test you
 - [Configuration](#configuration)
 - [API Reference](#api-reference)
 - [Advanced Topics](#advanced-topics)
+  - [VSCode Extension Integration](#vscode-extension-integration)
+  - [Automatic Visual Regression Testing](#automatic-visual-regression-testing)
 - [Troubleshooting](#troubleshooting)
 - [Examples](#examples)
 - [Contributing](#contributing)
@@ -784,6 +787,78 @@ const baseURL = getBaseURL({ port: 3000, host: 'localhost' });
 ```
 
 ## Advanced Topics
+
+### VSCode Extension Integration
+
+The [Playwright Test for VSCode](https://marketplace.visualstudio.com/items?itemName=ms-playwright.playwright) extension provides a seamless testing experience with zero configuration required.
+
+#### Installation
+
+```bash
+code --install-extension ms-playwright.playwright
+```
+
+Or install from VSCode:
+1. Open VSCode
+2. Go to Extensions (Ctrl+Shift+X / Cmd+Shift+X)
+3. Search for "Playwright Test for VSCode"
+4. Click Install
+
+#### Features
+
+**Test Explorer Integration**
+- All your component tests appear automatically in the Test Explorer sidebar
+- Hierarchical view of test files, describe blocks, and individual tests
+- Filter and search tests by name
+
+**Run and Debug Tests**
+- Click the play button next to any test to run it
+- Run individual tests, test suites, or entire files
+- Debug tests with breakpoints and step-through debugging
+- View test results inline in the editor
+
+**Visual Test Debugging**
+- Watch mode automatically reruns tests on file changes
+- See which tests passed/failed at a glance
+- Click on failed tests to see error messages and stack traces
+- View screenshots and traces directly in VSCode
+
+**Interactive Locator Picking**
+- Use "Record at cursor" to generate selectors interactively
+- Pick elements from your rendered components
+- Automatically generates optimal Playwright selectors
+
+**Example Workflow:**
+
+```typescript
+import { test, expect } from 'webrun-testing';
+
+test('my component test', async ({ render }) => {
+  const { container } = await render(<my-button>Click</my-button>);
+
+  // Set a breakpoint here to inspect the rendered component
+  await expect(container).toBeVisible();
+
+  // The extension shows test results inline
+  await container.click();
+});
+```
+
+When you open a test file, you'll see:
+- ▶️ Run icons next to each test
+- 🐛 Debug icons for debugging
+- ✅ or ❌ status indicators showing pass/fail state
+- Test results in the Test Explorer panel
+
+**No Configuration Required**
+
+The extension automatically:
+- Detects your `playwright.config.ts`
+- Discovers all test files matching your config
+- Shows all component tests in the Test Explorer
+- Updates test status in real-time as you code
+
+This works seamlessly with `webrun-testing` - just install the extension and start testing!
 
 ### Automatic Visual Regression Testing
 
