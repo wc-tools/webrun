@@ -116,7 +116,7 @@ test('button handles clicks', async ({ render }) => {
   );
 
   // Spy on click events
-  const getClickEvents = await spyOn(container, 'click');
+  const getClickEvents = await container.spyOn('click');
 
   // Interact with component
   await container.click();
@@ -227,7 +227,7 @@ test('handles form submission', async ({ render }) => {
   );
 
   // Spy on submit events
-  const getSubmitEvents = await spyOn(container, 'submit');
+  const getSubmitEvents = await container.spyOn('submit');
 
   // Fill form using accessible queries
   await container.getByLabel('Email').fill('user@example.com');
@@ -251,7 +251,7 @@ test('tracks button clicks', async ({ render }) => {
   );
 
   // Set up event spy
-  const getClickEvents = await spyOn(container, 'click');
+  const getClickEvents = await container.spyOn('click');
 
   // Trigger multiple clicks
   await container.click();
@@ -681,7 +681,7 @@ import { spyOn } from '@wc-tools/webrun';
 
 // Recommended: Use with container
 const { container } = await render(<button>Click</button>);
-const getClickEvents = await spyOn(container, 'click');
+const getClickEvents = await container.spyOn('click');
 await container.click();
 
 const events = await getClickEvents();
@@ -885,11 +885,14 @@ test('calls component methods', async ({ render }) => {
 **Problem:** Tests fail with "Element not found" or timeout errors.
 
 **Solutions:**
-1. Ensure your component is rendered before interacting:
+1. For Stencil components, configure the hydrated class to wait for hydration:
    ```typescript
-   const { container } = await render(<my-component />);
-   await expect(container).toBeVisible(); // Wait for visibility
+   export default withComponentTesting({
+     hydratedClass: 'hydrated', // Wait for Stencil hydration
+     // ... other options
+   })(defineConfig({ /* ... */ }));
    ```
+   Components automatically wait for the hydrated class before interactions.
 
 2. For custom elements, wait for definition:
    ```typescript
@@ -897,6 +900,12 @@ test('calls component methods', async ({ render }) => {
    ```
 
 3. Check that `staticDir` points to the correct build output.
+
+4. As a last resort, wait for visibility (not recommended as primary solution):
+   ```typescript
+   const { container } = await render(<my-component />);
+   await expect(container).toBeVisible();
+   ```
 
 ### Properties not updating
 
@@ -993,7 +1002,8 @@ test('calls component methods', async ({ render }) => {
 
 See the [examples/](./examples/) directory for complete working examples:
 
-- **[Stencil Component Library](./examples/playwright.config.stencil.ts)** - Full Stencil configuration
+- **[Stencil Component Library](https://github.com/wc-tools/webrun-stencil)** - Full Stencil example with @wc-tools/webrun
+- **[Stencil Configuration](./examples/playwright.config.stencil.ts)** - Stencil configuration reference
 - **[Lit Component Library](./examples/playwright.config.lit.ts)** - Lit with import maps
 - **[Custom Web Server](./examples/playwright.config.custom-server.ts)** - Using Vite/Webpack
 

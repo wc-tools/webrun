@@ -6,6 +6,7 @@ export default withComponentTesting({
   host: 'localhost',
   staticDir: './', // Serve from project root to access test files
   autoStart: true,  // Enable auto-start for serving test files
+  autoVrt: true,     // Enable automatic visual regression testing
 })(defineConfig({
   testDir: './test',
   fullyParallel: true,
