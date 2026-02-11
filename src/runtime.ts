@@ -10,7 +10,7 @@ import type {
   RenderOptions
 } from './runtime.types.js';
 import { extendLocator } from './utils/locator-extensions.js';
-import { createExpectWithScreenshots } from './utils/expect-extensions.js';
+import { setPageContext, setAutoVrtEnabled, expectWithScreenshots } from './utils/expect-extensions.js';
 
 export type {
   JSXElement,
@@ -31,17 +31,25 @@ export const test = base.extend<ComponentTestFixtures>({
     use: (r: (component: string | JSXElement | LitTemplateResult, options?: RenderOptions) => Promise<RenderResult>) => Promise<void>,
     testInfo
   ) => {
-    const renderFunction = async (component: string | JSXElement | LitTemplateResult, options?: RenderOptions): Promise<RenderResult> => {
-      // Get component testing config from Playwright context
-      const projectUse = testInfo.project.use as { componentTesting?: ComponentTestingConfig };
-      const config = projectUse.componentTesting || {};
+    // Get component testing config from Playwright context
+    const projectUse = testInfo.project.use as { componentTesting?: ComponentTestingConfig };
+    const config = projectUse.componentTesting || {};
 
+    // Set up page context and autoVrt for expect extensions
+    setPageContext(page);
+    setAutoVrtEnabled(config.autoVrt || false);
+
+    // Get baseURL from test config
+    const baseURL = testInfo.project.use.baseURL || 'http://localhost:3000';
+
+    const renderFunction = async (component: string | JSXElement | LitTemplateResult, options?: RenderOptions): Promise<RenderResult> => {
       // Build render context
       const context: RenderContext = {
         stylesheets: config.stylesheets || [],
         scripts: config.scripts || [],
         globalStyles: config.globalStyles || '',
-        ...(config.importMap ? { importMap: config.importMap } : {})
+        ...(config.importMap ? { importMap: config.importMap } : {}),
+        baseURL
       };
 
       // Use functional renderer system to generate HTML
@@ -61,21 +69,6 @@ export const test = base.extend<ComponentTestFixtures>({
 
     await use(renderFunction);
   },
-
-  expect: async ({ page }, use, testInfo) => {
-    // Get component testing config from Playwright context
-    const projectUse = testInfo.project.use as { componentTesting?: ComponentTestingConfig };
-    const config = projectUse.componentTesting || {};
-
-    // If autoVrt is enabled, use the screenshot-enhanced expect
-    if (config.autoVrt) {
-      const expectWithScreenshots = createExpectWithScreenshots(page);
-      await use(expectWithScreenshots);
-    } else {
-      // Otherwise, use the standard expect
-      await use(baseExpect);
-    }
-  },
 });
 
 /**
@@ -83,13 +76,12 @@ export const test = base.extend<ComponentTestFixtures>({
  */
 async function unmount(page: Page): Promise<void> {
   await page.evaluate(() => {
-    // Clear the first container div in body
-    const containerElement = document.querySelector('body > div:first-child');
+    const containerElement = document.querySelector('body > *:first-child');
     if (containerElement) {
-      containerElement.innerHTML = '';
+      containerElement.remove();
     }
   });
-}``
+}
 
 /**
  * Wait for all elements matching the selector to be visible or attached
@@ -115,7 +107,7 @@ async function waitForInitialElements(
 }
 
 /**
- * Export expect from the test fixtures
- * This automatically includes autoVrt functionality when enabled in the configuration
+ * Export expect with autoVrt support
+ * Uses the extended expect that captures screenshots when autoVrt is enabled
  */
-export const { expect } = test;
+export const expect = expectWithScreenshots;

@@ -16,7 +16,7 @@ export type {
 export { extendLocator } from './utils/locator-extensions.js';
 export type { ExtendedLocator } from './utils/locator-extensions.js';
 
-export { createExpectWithScreenshots } from './utils/expect-extensions.js';
+export { expectWithScreenshots, setPageContext, setAutoVrtEnabled } from './utils/expect-extensions.js';
 
 export { withComponentTesting, getBaseURL } from './preset.js';
 export type { ComponentTestingPresetOptions } from './preset.js';

@@ -9,6 +9,10 @@ import type { RenderContext } from './types.js';
  * Build full HTML page from component HTML
  */
 export function buildHTML(componentHTML: string, context: RenderContext): string {
+  const baseTag = context.baseURL
+    ? `<base href="${context.baseURL}/" />\n            `
+    : '';
+
   const importMapTag = context.importMap
     ? `<script type="importmap">${JSON.stringify(context.importMap, null, 2)}</script>\n            `
     : '';
@@ -18,7 +22,7 @@ export function buildHTML(componentHTML: string, context: RenderContext): string
     .join('\n            ');
 
   const scriptTags = context.scripts
-    .map((src) => `<script src="${src}"></script>`)
+    .map((src) => `<script type="module" src="${src}"></script>`)
     .join('\n            ');
 
   return `
@@ -27,11 +31,11 @@ export function buildHTML(componentHTML: string, context: RenderContext): string
           <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            ${importMapTag}${stylesheetLinks}
+            ${baseTag}${importMapTag}${stylesheetLinks}
             ${context.globalStyles ? `<style>${context.globalStyles}</style>` : ''}
           </head>
           <body>
-            <div id="test-container">${componentHTML}</div>
+            ${componentHTML}
             ${scriptTags}
           </body>
         </html>

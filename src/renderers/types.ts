@@ -26,6 +26,11 @@ export interface RenderContext {
     imports?: Record<string, string>;
     scopes?: Record<string, Record<string, string>>;
   };
+
+  /**
+   * Base URL for resolving relative paths
+   */
+  baseURL?: string;
 }
 
 export interface RendererResult {

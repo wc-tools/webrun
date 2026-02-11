@@ -240,6 +240,21 @@ export function withComponentTesting(options: ComponentTestingPresetOptions = {}
       use: {
         ...config.use,
         baseURL: config.use?.baseURL ?? baseURL,
+        // Bypass CSP for component testing with setContent()
+        bypassCSP: config.use?.bypassCSP ?? true,
+        // Disable web security to allow scripts from null origin
+        // This is necessary because setContent() creates pages with null origin
+        launchOptions: {
+          ...(config.use?.launchOptions || {}),
+          args: [
+            ...(config.use?.launchOptions?.args || []),
+            '--disable-web-security',
+            '--disable-site-isolation-trials',
+            '--allow-file-access-from-files',
+            '--allow-running-insecure-content',
+            '--disable-features=IsolateOrigins,site-per-process,BlockInsecurePrivateNetworkRequests',
+          ],
+        },
         // Store component testing config in use context
         componentTesting: {
           stylesheets,

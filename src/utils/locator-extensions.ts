@@ -7,8 +7,9 @@ import type { Locator } from '@playwright/test';
 import { getPropertyFromLocator } from '../helpers/property.js';
 import { setPropertyOnLocator } from '../helpers/property.js';
 import { callOnLocator } from '../helpers/methods.js';
+import { spyOn as spyOnHelper } from '../helpers/events.js';
 
-import type { PropertyValue } from '../helpers/types.js';
+import type { PropertyValue, TrackedEvent } from '../helpers/types.js';
 
 /**
  * Extended Locator interface with component testing helpers
@@ -41,6 +42,13 @@ export interface ExtendedLocator extends Locator {
    * @param args - Arguments to pass to the method
    */
   callMethod<T = unknown>(methodName: string, ...args: unknown[]): Promise<T>;
+
+  /**
+   * Spy on events emitted by the element
+   * @param eventName - Name of the event to spy on
+   * @returns A function that returns the captured events
+   */
+  spyOn(eventName: string): Promise<() => Promise<TrackedEvent[]>>;
 }
 
 /**
@@ -73,6 +81,10 @@ export function extendLocator(locator: Locator): ExtendedLocator {
 
   extended.callMethod = async function <T = unknown>(methodName: string, ...args: unknown[]): Promise<T> {
     return await callOnLocator<T>(locator, methodName, ...args);
+  };
+
+  extended.spyOn = async function (eventName: string): Promise<() => Promise<TrackedEvent[]>> {
+    return await spyOnHelper(locator, eventName);
   };
 
   return extended as ExtendedLocator;

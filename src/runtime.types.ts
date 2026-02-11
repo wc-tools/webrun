@@ -4,7 +4,6 @@
  */
 
 import type { ExtendedLocator } from './utils/locator-extensions.js';
-import type { Expect } from '@playwright/test';
 
 /**
  * Minimal JSX type (Playwright handles JSX transform)
@@ -69,10 +68,4 @@ export interface ComponentTestFixtures {
    * @param options - Optional render options
    */
   render: (component: string | JSXElement | LitTemplateResult, options?: RenderOptions) => Promise<RenderResult>;
-
-  /**
-   * Extended expect that automatically captures screenshots when autoVrt is enabled
-   * When autoVrt is false, this is the standard Playwright expect
-   */
-  expect: Expect;
 }

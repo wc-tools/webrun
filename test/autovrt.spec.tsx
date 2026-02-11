@@ -1,7 +1,7 @@
-import { test } from '../src/index.js';
+import { test, expect } from '../src/index.js';
 
 test.describe('AutoVRT', () => {
-  test('captures screenshots automatically', async ({ render, expect }) => {
+  test('captures screenshots automatically', async ({ render }) => {
     const { container } = await render(
       <div>
         <h1>AutoVRT Test</h1>

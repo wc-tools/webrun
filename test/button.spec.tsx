@@ -2,7 +2,7 @@ import { test, expect } from '../src/index.js';
 
 test.describe('Button Component', () => {
   test('should render a basic button', async ({ render, page }) => {
-    await render('<button id="test-btn">Click Me</button>');
+    await render(<button id="test-btn">Click Me</button>);
 
     const button = page.locator('#test-btn');
     await expect(button).toBeVisible();
@@ -78,7 +78,7 @@ test.describe('Button Component', () => {
   });
 
   test('should unmount button component', async ({ render, page }) => {
-    const { unmount } = await render('<button id="unmount-btn">Unmount Me</button>');
+    const { unmount } = await render(<button id="unmount-btn">Unmount Me</button>);
 
     const button = page.locator('#unmount-btn');
     await expect(button).toBeVisible();

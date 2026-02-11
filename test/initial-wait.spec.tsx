@@ -1,7 +1,7 @@
-import { test } from '../src/index.js';
+import { test, expect } from '../src/index.js';
 
 test.describe('Initial Wait for Element', () => {
-  test('waits for hydration class before proceeding', async ({ render, expect }) => {
+  test('waits for hydration class before proceeding', async ({ render }) => {
     const { container } = await render(
       <div className="hydrated">
         <h1>Component Ready</h1>
@@ -12,7 +12,7 @@ test.describe('Initial Wait for Element', () => {
     await expect(container.getByRole('heading')).toHaveText('Component Ready');
   });
 
-  test('waits for multiple hydrated components', async ({ render, expect }) => {
+  test('waits for multiple hydrated components', async ({ render }) => {
     const { container } = await render(
       <div>
         <div className="hydrated">
@@ -33,7 +33,7 @@ test.describe('Initial Wait for Element', () => {
     await expect(container.getByRole('heading', { level: 3 })).toBeVisible();
   });
 
-  test('skipVisibilityCheck waits for attached instead of visible', async ({ render, expect }) => {
+  test('skipVisibilityCheck waits for attached instead of visible', async ({ render }) => {
     const { container } = await render(
       <div className="hydrated" style="display: none;">
         <h1>Hidden Component</h1>
@@ -45,7 +45,7 @@ test.describe('Initial Wait for Element', () => {
     await expect(container).toBeAttached();
   });
 
-  test('skipVisibilityCheck works with multiple hidden components', async ({ render, expect }) => {
+  test('skipVisibilityCheck works with multiple hidden components', async ({ render }) => {
     const { container } = await render(
       <div>
         <div className="hydrated" style="display: none;">

@@ -2,13 +2,13 @@ import { test, expect } from '../src/index.js';
 
 test.describe('Select Component', () => {
   test('should render a basic select dropdown', async ({ render, page }) => {
-    await render(`
-        <select id="fruit-select">
-          <option value="apple">Apple</option>
-          <option value="banana">Banana</option>
-          <option value="orange">Orange</option>
-        </select>
-      `);
+    await render(
+      <select id="fruit-select">
+        <option value="apple">Apple</option>
+        <option value="banana">Banana</option>
+        <option value="orange">Orange</option>
+      </select>
+    );
 
     const select = page.locator('#fruit-select');
     await expect(select).toBeVisible();
@@ -16,14 +16,14 @@ test.describe('Select Component', () => {
   });
 
   test('should select different options', async ({ render, page }) => {
-    await render(`
-        <select id="color-select">
-          <option value="">Choose a color</option>
-          <option value="red">Red</option>
-          <option value="green">Green</option>
-          <option value="blue">Blue</option>
-        </select>
-      `);
+    await render(
+      <select id="color-select">
+        <option value="">Choose a color</option>
+        <option value="red">Red</option>
+        <option value="green">Green</option>
+        <option value="blue">Blue</option>
+      </select>
+    );
 
     const select = page.locator('#color-select');
 
@@ -45,7 +45,7 @@ test.describe('Select Component', () => {
           <option value="option3">Option 3</option>
         </select>
         <div id="selected-value">No selection</div>
-      
+
         <script>
         document.getElementById('change-select').addEventListener('change', (e) => {
           document.getElementById('selected-value').textContent = 'Selected: ' + e.target.value;
@@ -66,14 +66,14 @@ test.describe('Select Component', () => {
   });
 
   test('should handle multiple select', async ({ render, page }) => {
-    await render(`
-        <select id="multi-select" multiple>
-          <option value="javascript">JavaScript</option>
-          <option value="python">Python</option>
-          <option value="java">Java</option>
-          <option value="rust">Rust</option>
-        </select>
-      `);
+    await render(
+      <select id="multi-select" multiple>
+        <option value="javascript">JavaScript</option>
+        <option value="python">Python</option>
+        <option value="java">Java</option>
+        <option value="rust">Rust</option>
+      </select>
+    );
 
     const select = page.locator('#multi-select');
 
@@ -87,13 +87,13 @@ test.describe('Select Component', () => {
   });
 
   test('should handle disabled options', async ({ render, page }) => {
-    await render(`
-        <select id="disabled-option-select">
-          <option value="enabled1">Enabled 1</option>
-          <option value="disabled" disabled>Disabled Option</option>
-          <option value="enabled2">Enabled 2</option>
-        </select>
-      `);
+    await render(
+      <select id="disabled-option-select">
+        <option value="enabled1">Enabled 1</option>
+        <option value="disabled" disabled>Disabled Option</option>
+        <option value="enabled2">Enabled 2</option>
+      </select>
+    );
 
     const disabledOption = page.locator('#disabled-option-select option[value="disabled"]');
     await expect(disabledOption).toBeDisabled();
@@ -112,7 +112,7 @@ test.describe('Select Component', () => {
           <option value="1">One</option>
           <option value="2">Two</option>
         </select>
-      
+
       `);
 
     const select = page.locator('#styled-select');

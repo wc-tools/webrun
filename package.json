@@ -3,12 +3,13 @@
   "version": "1.0.0",
   "type": "module",
   "description": "A web component testing runtime for Playwright",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js",
+      "default": "./dist/src/index.js"
     }
   },
   "files": [
@@ -52,14 +53,16 @@
     "url": "https://github.com/wc-tools/webrun/issues"
   },
   "packageManager": "pnpm@10.23.0",
+  "dependencies": {
+    "@lit-labs/ssr": "^4.0.0",
+    "@stencil/core": "^4.42.0",
+    "lit": "^3.3.2"
+  },
   "devDependencies": {
     "@changesets/cli": "^2.29.8",
-    "@lit-labs/ssr": "^4.0.0",
-    "@playwright/test": "1.58.1",
-    "@stencil/core": "^4.42.0",
+    "@playwright/test": "1.58.2",
     "@stencil/ssr": "^0.3.0",
     "@types/node": "24.10.9",
-    "lit": "^3.3.2",
     "oxlint": "^1.43.0",
     "typescript": "5.9.3"
   },
