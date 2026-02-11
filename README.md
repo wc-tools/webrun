@@ -10,7 +10,7 @@ A modern, type-safe testing runtime for web components with Playwright. Test you
 
 - **Familiar Testing Library-like test syntax** - Write component tests with the `render(<component attribute={value} />)` API you already know
 - **Automatic visual regression testing** - Capture screenshots after every assertion with `autoVrt` mode for zero-config and zero-code visual testing
-- **Mocking and component testing utilities** - Set properties/functions, emit events, spy on handlers
+- **Built-in helpers with auto retry** - `getProperty()`, `setProperty()`, `callMethod()`, and other helpers automatically retry until successful. Set properties/functions, emit events, spy on handlers
 - **Support for JSX and Lit HTML components** - Write tests in your preferred format
 - **VSCode Test Explorer integration** - Run and debug tests directly in VSCode with the Playwright extension (zero configuration) and using the  official `ms-playwright.playwright` extension
 - **Hot reload and Tooling** - Watch mode for rapid test iteration
@@ -22,7 +22,6 @@ A modern, type-safe testing runtime for web components with Playwright. Test you
 
 ## Table of Contents
 
-- [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Quick Start](#quick-start)
 - [Core Concepts](#core-concepts)
@@ -40,25 +39,17 @@ A modern, type-safe testing runtime for web components with Playwright. Test you
 - [Examples](#examples)
 - [Contributing](#contributing)
 
-## Prerequisites
-
-Before installing, ensure you have:
-
-- **Node.js** 20 or higher (24 recommended)
-- **Playwright** 1.40 or higher
-- **TypeScript** 5.0+ (recommended for JSX support)
-
 ## Installation
 
 ```bash
 # Using pnpm (recommended)
-pnpm add -D @wc-tools/webrun @playwright/test
+pnpm add -D webrun-testing @playwright/test
 
 # Using npm
-npm install --save-dev @wc-tools/webrun @playwright/test
+npm install --save-dev webrun-testing @playwright/test
 
 # Using yarn
-yarn add -D @wc-tools/webrun @playwright/test
+yarn add -D webrun-testing @playwright/test
 ```
 
 ## Quick Start
@@ -69,7 +60,7 @@ Create or update `playwright.config.ts`:
 
 ```typescript
 import { defineConfig } from '@playwright/test';
-import { withComponentTesting } from '@wc-tools/webrun';
+import { withComponentTesting } from 'webrun-testing';
 
 export default withComponentTesting({
   port: 3000,
@@ -97,7 +88,7 @@ If using JSX, update `tsconfig.json`:
 {
   "compilerOptions": {
     "jsx": "react-jsx",
-    "jsxImportSource": "@wc-tools/webrun",
+    "jsxImportSource": "webrun-testing",
     "target": "ES2020",
     "module": "ESNext",
     "moduleResolution": "bundler"
@@ -110,7 +101,7 @@ If using JSX, update `tsconfig.json`:
 Create `test/button.spec.tsx`:
 
 ```typescript
-import { test, expect, spyOn } from '@wc-tools/webrun';
+import { test, expect, spyOn } from 'webrun-testing';
 
 test('button handles clicks', async ({ render }) => {
   // Render component
@@ -214,7 +205,7 @@ test('unmounts component', async ({ render }) => {
 ### Testing Forms
 
 ```typescript
-import { test, expect, spyOn } from '@wc-tools/webrun';
+import { test, expect, spyOn } from 'webrun-testing';
 
 test('handles form submission', async ({ render }) => {
   const { container } = await render(
@@ -246,7 +237,7 @@ test('handles form submission', async ({ render }) => {
 ### Testing Event Handlers
 
 ```typescript
-import { test, expect, spyOn } from '@wc-tools/webrun';
+import { test, expect, spyOn } from 'webrun-testing';
 
 test('tracks button clicks', async ({ render }) => {
   const { container } = await render(
@@ -271,7 +262,7 @@ test('tracks button clicks', async ({ render }) => {
 ### Testing Accessibility
 
 ```typescript
-import { test, expect } from '@wc-tools/webrun';
+import { test, expect } from 'webrun-testing';
 
 test('has proper ARIA attributes', async ({ render }) => {
   const { container } = await render(
@@ -297,7 +288,7 @@ test('has proper ARIA attributes', async ({ render }) => {
 ### Testing Async Operations
 
 ```typescript
-import { test, expect } from '@wc-tools/webrun';
+import { test, expect } from 'webrun-testing';
 
 test('handles async data loading', async ({ render }) => {
   const { container } = await render(
@@ -321,7 +312,7 @@ test('handles async data loading', async ({ render }) => {
 ### Testing Custom Web Components
 
 ```typescript
-import { test, expect, waitForComponent } from '@wc-tools/webrun';
+import { test, expect, waitForComponent } from 'webrun-testing';
 
 test('tests custom element with Shadow DOM', async ({ render, page }) => {
   const { container } = await render(
@@ -413,7 +404,7 @@ interface ComponentTestingPresetOptions {
 
 ```typescript
 import { defineConfig } from '@playwright/test';
-import { withComponentTesting } from '@wc-tools/webrun';
+import { withComponentTesting } from 'webrun-testing';
 
 export default withComponentTesting({
   port: 3000,
@@ -434,7 +425,7 @@ See [examples/playwright.config.stencil.ts](./examples/playwright.config.stencil
 
 ```typescript
 import { defineConfig } from '@playwright/test';
-import { withComponentTesting } from '@wc-tools/webrun';
+import { withComponentTesting } from 'webrun-testing';
 
 export default withComponentTesting({
   port: 3000,
@@ -632,7 +623,7 @@ const result = await container.callMethod<string>('getData', 'param1', 'param2')
 Set a property using a CSS selector.
 
 ```typescript
-import { setProperty } from '@wc-tools/webrun';
+import { setProperty } from 'webrun-testing';
 
 await setProperty(page, '#my-component', 'value', 'Hello');
 ```
@@ -642,7 +633,7 @@ await setProperty(page, '#my-component', 'value', 'Hello');
 Get a property using a CSS selector with retry.
 
 ```typescript
-import { getProperty } from '@wc-tools/webrun';
+import { getProperty } from 'webrun-testing';
 
 const value = await getProperty(page, '#my-component', 'value', {
   timeout: 2000,
@@ -655,7 +646,7 @@ const value = await getProperty(page, '#my-component', 'value', {
 Call a method using a CSS selector.
 
 ```typescript
-import { call } from '@wc-tools/webrun';
+import { call } from 'webrun-testing';
 
 const result = await call(page, '#my-component', 'reset');
 ```
@@ -665,7 +656,7 @@ const result = await call(page, '#my-component', 'reset');
 Get all attributes from an element.
 
 ```typescript
-import { getAttributes } from '@wc-tools/webrun';
+import { getAttributes } from 'webrun-testing';
 
 const attrs = await getAttributes(page, '#my-component');
 expect(attrs['data-value']).toBe('test');
@@ -680,7 +671,7 @@ expect(attrs['data-value']).toBe('test');
 Spy on events emitted by a component. Returns a getter function to retrieve captured events.
 
 ```typescript
-import { spyOn } from '@wc-tools/webrun';
+import { spyOn } from 'webrun-testing';
 
 // Recommended: Use with container
 const { container } = await render(<button>Click</button>);
@@ -699,7 +690,7 @@ expect(events[0]?.type).toBe('click');
 Emit a custom event on a component.
 
 ```typescript
-import { emit } from '@wc-tools/webrun';
+import { emit } from 'webrun-testing';
 
 await emit(page, '#my-component', 'customEvent', { key: 'value' }, {
   bubbles: true,
@@ -713,7 +704,7 @@ await emit(page, '#my-component', 'customEvent', { key: 'value' }, {
 Wait for a specific event to be emitted.
 
 ```typescript
-import { waitForEvent } from '@wc-tools/webrun';
+import { waitForEvent } from 'webrun-testing';
 
 const event = await waitForEvent(page, '#my-component', 'loaded', 5000);
 expect(event.detail).toBeDefined();
@@ -724,7 +715,7 @@ expect(event.detail).toBeDefined();
 Get the call history for a function property set via `setProperty`.
 
 ```typescript
-import { setProperty, getFunctionCalls } from '@wc-tools/webrun';
+import { setProperty, getFunctionCalls } from 'webrun-testing';
 
 await setProperty(page, '#btn', 'onClick', () => {});
 await page.locator('#btn').click();
@@ -742,7 +733,7 @@ expect(calls).toHaveLength(1);
 Wait for a custom element to be defined.
 
 ```typescript
-import { waitForComponent } from '@wc-tools/webrun';
+import { waitForComponent } from 'webrun-testing';
 
 await waitForComponent(page, 'my-custom-element', 5000);
 ```
@@ -752,7 +743,7 @@ await waitForComponent(page, 'my-custom-element', 5000);
 Check if a custom element is defined.
 
 ```typescript
-import { isComponentDefined } from '@wc-tools/webrun';
+import { isComponentDefined } from 'webrun-testing';
 
 const isDefined = await isComponentDefined(page, 'my-custom-element');
 expect(isDefined).toBe(true);
@@ -767,7 +758,7 @@ expect(isDefined).toBe(true);
 Higher-order function that enhances Playwright configuration with component testing capabilities.
 
 ```typescript
-import { withComponentTesting } from '@wc-tools/webrun';
+import { withComponentTesting } from 'webrun-testing';
 
 export default withComponentTesting({
   port: 3000,
@@ -780,7 +771,7 @@ export default withComponentTesting({
 Get the base URL for the component testing server.
 
 ```typescript
-import { getBaseURL } from '@wc-tools/webrun';
+import { getBaseURL } from 'webrun-testing';
 
 const baseURL = getBaseURL({ port: 3000, host: 'localhost' });
 // Returns: "http://localhost:3000"
@@ -873,7 +864,7 @@ export default withComponentTesting({
 **Usage:**
 
 ```typescript
-import { test, expect } from '@wc-tools/webrun';
+import { test, expect } from 'webrun-testing';
 
 test('visual regression', async ({ render }) => {
   const { container } = await render(<button>Click</button>);
@@ -886,7 +877,7 @@ The `expect` from `@wc-tools/webrun` automatically uses autoVrt when enabled - n
 ### Testing with Lit Templates
 
 ```typescript
-import { test, expect } from '@wc-tools/webrun';
+import { test, expect } from 'webrun-testing';
 import { html } from 'lit';
 
 test('renders Lit template', async ({ render }) => {
@@ -1031,7 +1022,7 @@ test('calls component methods', async ({ render }) => {
 {
   "compilerOptions": {
     "jsx": "react-jsx",
-    "jsxImportSource": "@wc-tools/webrun"
+    "jsxImportSource": "webrun-testing"
   }
 }
 ```
