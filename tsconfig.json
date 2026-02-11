@@ -14,7 +14,7 @@
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
-    "rootDir": "./",
+    "rootDir": "./src",
     "outDir": "./dist",
     "removeComments": true,
     "importHelpers": false,
@@ -52,11 +52,11 @@
     "skipLibCheck": true
   },
   "include": [
-    "src/**/*",
-    "test/**/*"
+    "src/**/*"
   ],
   "exclude": [
     "node_modules",
-    "dist"
+    "dist",
+    "test"
   ]
 }

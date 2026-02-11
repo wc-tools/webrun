@@ -1,15 +1,15 @@
 {
-  "name": "@wc-tools/webrun",
-  "version": "1.0.0",
+  "name": "webrun-testing",
+  "version": "1.0.1",
   "type": "module",
   "description": "A web component testing runtime for Playwright",
-  "main": "dist/src/index.js",
-  "types": "dist/src/index.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/src/index.d.ts",
-      "import": "./dist/src/index.js",
-      "default": "./dist/src/index.js"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
     }
   },
   "files": [
@@ -19,8 +19,7 @@
     "CHANGELOG.md"
   ],
   "publishConfig": {
-    "access": "public",
-    "provenance": true
+    "access": "public"
   },
   "scripts": {
     "build": "tsc",
@@ -42,15 +41,15 @@
     "web-components",
     "component-testing"
   ],
-  "author": "wc-tools",
+  "author": "Teo E.",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wc-tools/webrun.git"
+    "url": "git+https://github.com/webrun.git"
   },
-  "homepage": "https://github.com/wc-tools/webrun#readme",
+  "homepage": "https://github.com/webrun#readme",
   "bugs": {
-    "url": "https://github.com/wc-tools/webrun/issues"
+    "url": "https://github.com/webrun/issues"
   },
   "packageManager": "pnpm@10.23.0",
   "dependencies": {
